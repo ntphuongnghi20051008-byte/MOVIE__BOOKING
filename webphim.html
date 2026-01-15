@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Movie Booking</title>
+<style>
+    /* Khung giờ chiếu */
+.showtimes{
+    display:flex;          /* xếp ngang */
+    gap:10px;              /* khoảng cách giữa các giờ */
+    flex-wrap:wrap;        /* tự xuống dòng nếu dài */
+    margin:10px 0;
+}
+
+.time{
+    padding:8px 14px;
+    background:#333;
+    border-radius:6px;
+    cursor:pointer;
+    border:1px solid #555;
+}
+
+.time.active{
+    background:#09e5cf;    /* khi được chọn */
+    color:black;
+    font-weight:bold;
+}
+
+body{
+    margin:0;
+    font-family: Arial;
+    background:black;
+    color:white;
+}
+
+header{
+    background:#0cb077;
+    padding:15px;
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+}
+
+.movie-list{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+.movie{
+    background:#222222;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 0 10px rgba(0,0,0,0.8);
+    transition:0.3s;
+     width: 100%;
+    max-width: 100%;
+}
+.slides{
+    display:flex;
+    width:200%;  /* vì nhân đôi ảnh */
+    height:100%;
+    animation: scroll 40s linear infinite;
+}
+
+.slides img{
+    width:10%;   /* 10 ảnh = 10% mỗi ảnh */
+    height:100%;
+    object-fit:contain;
+    background:black;
+    flex-shrink:0;
+}
+
+@keyframes scroll{
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+
+.movie:hover{
+    transform:scale(1.05);
+}
+
+.movie img{
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+    display: block;
+}
+
+.movie-info{
+    padding:15px;
+}
+
+.movie-info h3{
+    margin:0 0 10px;
+}
+
+.movie-info button{
+    background:#e50914;
+    border:none;
+    padding:10px;
+    width:100%;
+    color:white;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+.movie-info button:hover{
+    background:#ff1e27;
+}
+
+/* Modal */
+.modal{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.8);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.modal-content{
+    background:#222;
+    padding:20px;
+    width:400px;
+    border-radius:10px;
+}
+
+.seats{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+    margin:20px 0;
+}
+
+.seat{
+    background:#444;
+    padding:10px;
+    text-align:center;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+.seat.selected{
+    background:#09e5cf;
+}
+
+.close{
+    float:right;
+    cursor:pointer;
+    color:#e50914;
+}
+</style>
+</head>
+
+<body>
+    <div class="slider">
+    <div class="slides">
+        <img src="https://pbs.twimg.com/media/GFMv8VKa8AAVgHV.jpg">
+        <img src="https://i.ebayimg.com/images/g/OcgAAOSw4wRdXxj2/s-l1200.jpg">
+        <img src="https://m.media-amazon.com/images/I/71qpfM9RzjL.jpg">
+        <img src="https://i.etsystatic.com/18242346/r/il/864ece/3727281843/il_570xN.3727281843_n4vs.jpg">
+        <img src="12.jpg">
+        <img src="KL.jpg">
+        <img src="7.jpg">
+        <img src="6.jpg.webp">
+
+        <img src="https://pbs.twimg.com/media/GFMv8VKa8AAVgHV.jpg">
+        <img src="https://i.ebayimg.com/images/g/OcgAAOSw4wRdXxj2/s-l1200.jpg">
+        <img src="https://m.media-amazon.com/images/I/71qpfM9RzjL.jpg">
+        <img src="https://i.etsystatic.com/18242346/r/il/864ece/3727281843/il_570xN.3727281843_n4vs.jpg">
+        <img src="12.jpg">
+        <img src="KL.jpg">
+        <img src="7.jpg">
+        <img src="6.jpg.webp">
+
+
+    </div>
+
+</div>
+
+
+<header style ="font-size:50px;">🎬 MOVIE BOOKING</header>
+<div class="movie-list">
+    <div class=" movie">
+        <img src="https://i.ebayimg.com/images/g/OcgAAOSw4wRdXxj2/s-l1200.jpg">
+        <div class="movie-info">
+            <h3>AVATAR</h3>
+            <p style="color:white; text-align: center">Khoa học viễn tưởng - Hành động - Phiêu lưu</p>
+            <button onclick="openBooking('AVATAR')">Đặt vé</button>
+        </div>
+    </div>
+
+    <div class=" movie">
+        <img src="https://m.media-amazon.com/images/I/71qpfM9RzjL.jpg">
+        <div class="movie-info">
+            <h3>ZOTOPIA</h3>
+            <p> Hoạt hình - hài hước</p>
+            <button onclick="openBooking('ZOTOPIA')">Đặt vé</button>
+        </div>
+    </div>
+
+    <div class=" movie">
+        <img src="KL.jpg">
+        <div class="movie-info">
+            <h3>THẾ GIỚI KHỦNG LONG</h3>
+            <p>Động vật - Hành động</p>
+            <button onclick="openBooking('THẾ GIỚI KHỦNG LONG')">Đặt vé</button>
+        </div>
+    </div>
+    <div class="movie">
+        <img src="7.jpg">
+        <div class="movie-info">
+            <h3>XỬ SỞ CÁC NGUYÊN TỐ</h3>
+            <p> Tình cảm </p>
+            <button onclick="openBooking('XỨ SỞ CÁC NGUYÊN TỐ')">Đặt vé</button>
+        </div>
+    </div>
+    <div class="movie">
+        <img src="6.jpg.webp">
+        <div class="movie-info">
+            <h3>GRAVE OF THE FIRELIES</h3>
+            <p> Tình cảm gia đình</p>
+            <button onclick="openBooking('GRAVE OF THE FIRELIES')">Đặt vé</button>
+        </div>
+     </div>
+</div> 
+<!-- Modal Booking -->
+ <!-- Modal Success -->
+<div class="modal" id="successModal">
+  <div class="modal-content">
+    <h2>🎉 ĐẶT VÉ THÀNH CÔNG</h2>
+    <p id="successInfo"></p>
+    <button onclick="closeSuccess()">Đóng</button>
+  </div>
+</div>
+
+ 
+<div class="modal" id="bookingModal">
+    
+    <div class="modal-content">
+        <span class="close" onclick="closeBooking()">X</span>
+        <h2 id="movieTitle"></h2>
+    <p>Chọn giờ chiếu:</p>
+<div class="showtimes" id="showtimes"></div>
+
+        <p>Chọn ghế:</p>
+        <div class="seats" id="seats"></div>
+        <p><strong>Tổng tiền: </strong><span id="totalPrice">0</span> VNĐ</p>
+        <button onclick="confirmBooking()">Xác nhận đặt vé</button>
+    </div>
+</div>
+
+<script>
+    let ticketPrice = 75000;
+    function updateTotal(){
+    let total = selectedSeats.length * ticketPrice;
+    document.getElementById("totalPrice").innerText =
+        total.toLocaleString("vi-VN");
+}
+
+
+let selectedMovie = "";
+let selectedSeats = [];
+let selectedTime = "";
+
+let showtimeData = {
+    "AVATAR": ["09:00", "13:30", "18:00", "21:00"],
+    "ZOTOPIA": ["10:00", "14:00", "19:00"],
+    "THẾ GIỚI KHỦNG LONG": ["11:00", "16:00", "20:30"],
+    "XỨ SỞ CÁC NGUYÊN TỐ": ["09:30", "15:00", "18:30"],
+    "GRAVE OF THE FIRELIES": ["17:00", "20:00"]
+};
+   function openBooking(movie){
+    selectedMovie = movie;
+    selectedSeats = [];
+    selectedTime = "";
+
+    document.getElementById("movieTitle").innerText = movie;
+    document.getElementById("bookingModal").style.display = "flex";
+
+    /* ===== GIỜ CHIẾU ===== */
+    let showtimeBox = document.getElementById("showtimes");
+    showtimeBox.innerHTML = "";
+
+    (showtimeData[movie] || []).forEach(time => {
+        let t = document.createElement("div");
+        t.className = "time";
+        t.innerText = time;
+
+        t.onclick = function(){
+            document.querySelectorAll(".time").forEach(x => x.classList.remove("active"));
+            this.classList.add("active");
+            selectedTime = time;
+        };
+
+        showtimeBox.appendChild(t);
+    });
+
+    /* ===== GHẾ ===== */
+    let seatBox = document.getElementById("seats");
+    seatBox.innerHTML = "";
+
+    for(let i=1;i<=20;i++){
+        let seat = document.createElement("div");
+        seat.className = "seat";
+        seat.innerText = i;
+
+        seat.onclick = function(){
+    this.classList.toggle("selected");
+
+    if(selectedSeats.includes(i)){
+        selectedSeats = selectedSeats.filter(s => s !== i);
+    }else{
+        selectedSeats.push(i);
+    }
+
+    updateTotal();
+};
+
+            
+
+        seatBox.appendChild(seat);
+    }
+    
+
+   }
+
+function closeBooking(){
+    document.getElementById("bookingModal").style.display="none";
+}
+
+function confirmBooking(){
+    if(!selectedTime){
+        alert("Bạn chưa chọn giờ chiếu!");
+        return;
+    }
+
+    if(selectedSeats.length == 0){
+        alert("Bạn chưa chọn ghế!");
+        return;
+    }
+
+    let total = selectedSeats.length * ticketPrice;
+
+    document.getElementById("successInfo").innerHTML =
+        "<b>🎬 Phim:</b> " + selectedMovie + "<br>" +
+        "<b>⏰ Giờ chiếu:</b> " + selectedTime + "<br>" +
+        "<b>💺 Ghế:</b> " + selectedSeats.join(", ") + "<br>" +
+        "<b>💰 Tổng tiền:</b> " + total.toLocaleString("vi-VN") + " VNĐ";
+
+    closeBooking();
+    document.getElementById("successModal").style.display = "flex";
+}
+function closeSuccess(){
+    document.getElementById("successModal").style.display = "none";
+}
+</script>
+</body>
+</html>
+
